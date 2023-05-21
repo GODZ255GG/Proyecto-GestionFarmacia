@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="688.0" prefWidth="897.0" style="-fx-background-color: #006666;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxgestionfarmacia.controladores.FXMLPromocionFormularioController">
+   <children>
+      <Pane prefHeight="86.0" prefWidth="897.0" style="-fx-background-color: white;">
+         <children>
+            <Label layoutX="257.0" layoutY="18.0" text="Registrar Promoción" textFill="#006666">
+               <font>
+                  <Font name="Footlight MT Light" size="46.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <TextField fx:id="tfNombrePromo" layoutX="46.0" layoutY="169.0" prefHeight="38.0" prefWidth="266.0" promptText="Nombre de promoción">
+         <font>
+            <Font name="Times New Roman" size="14.0" />
+         </font>
+      </TextField>
+      <DatePicker fx:id="dpInicio" layoutX="46.0" layoutY="397.0" prefHeight="38.0" prefWidth="266.0" promptText="dd/mm/yyyy" style="-fx-background-color: white;" />
+      <DatePicker fx:id="dpFin" layoutX="46.0" layoutY="506.0" prefHeight="38.0" prefWidth="266.0" promptText="dd/mm/yyyy" style="-fx-background-color: white;" />
+      <Label layoutX="46.0" layoutY="149.0" text="Nombre de la promoción" textFill="WHITE">
+         <font>
+            <Font name="Times New Roman" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="46.0" layoutY="258.0" text="Producto de promoción" textFill="WHITE">
+         <font>
+            <Font name="Times New Roman" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="46.0" layoutY="377.0" text="Fecha de inicio de la promoción" textFill="WHITE">
+         <font>
+            <Font name="Times New Roman" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="46.0" layoutY="486.0" text="Fecha de fin de la promoción" textFill="WHITE">
+         <font>
+            <Font name="Times New Roman" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="383.0" layoutY="412.0" text="Descripción de la promoción " textFill="WHITE">
+         <font>
+            <Font name="Times New Roman" size="18.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="cbProducto" layoutX="44.0" layoutY="278.0" prefHeight="38.0" prefWidth="266.0" promptText="Seleccione el Producto" style="-fx-background-color: white;" />
+      <TextArea fx:id="tfDescripcion" layoutX="383.0" layoutY="432.0" prefHeight="137.0" prefWidth="491.0" promptText="Descripción de la promoción">
+         <font>
+            <Font name="Times New Roman" size="14.0" />
+         </font>
+      </TextArea>
+      <ImageView fx:id="ivPromocion" fitHeight="219.0" fitWidth="351.0" layoutX="455.0" layoutY="133.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/Captura%20de%20pantalla%202023-05-11%20191044.png" />
+         </image></ImageView>
+      <Button layoutX="527.0" layoutY="360.0" mnemonicParsing="false" onAction="#clicBtnSeleccionFoto" prefHeight="38.0" prefWidth="204.0" style="-fx-background-radius: 18 18 18 18; -fx-background-color: white;" text="Seleccionar foto" textFill="#006666">
+         <font>
+            <Font name="Tahoma Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button layoutX="648.0" layoutY="608.0" mnemonicParsing="false" onAction="#clicBtnRegistrar" prefHeight="38.0" prefWidth="211.0" style="-fx-background-radius: 18 18 18 18; -fx-background-color: white;" text="Registrar promoción" textFill="#006666">
+         <font>
+            <Font name="Tahoma Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button layoutX="57.0" layoutY="608.0" mnemonicParsing="false" onAction="#clicBtnCancelar" prefHeight="39.0" prefWidth="148.0" style="-fx-background-radius: 18 18 18 18; -fx-background-color: white;" text="Cancelar" textFill="#006666">
+         <font>
+            <Font name="Tahoma Bold" size="18.0" />
+         </font>
+      </Button>
+      <Pane layoutY="664.0" prefHeight="28.0" prefWidth="897.0" style="-fx-background-color: white;" />
+      <Label fx:id="lbImagen" layoutX="395.0" layoutY="95.0" prefHeight="27.0" prefWidth="450.0" textFill="RED">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
