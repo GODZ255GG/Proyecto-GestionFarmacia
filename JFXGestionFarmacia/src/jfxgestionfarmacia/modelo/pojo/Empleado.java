@@ -14,12 +14,16 @@ public class Empleado {
     private int idSede;
     private String nombreSede;
     private int codigoRespuesta;
+    private byte[] foto;
+    private int idHorario;
+    private String turno;
+    private String horario;
     private ArrayList<Empleado> empleados;
 
     public Empleado() {
     }
 
-    public Empleado(int idEmpleado, String nombre, String apellidoPaterno, String apellidoMaterno, String correoElectronico, String username, String password, String tipoEmpleado, int idSede, String nombreSede, int codigoRespuesta, ArrayList<Empleado> empleados) {
+    public Empleado(int idEmpleado, String nombre, String apellidoPaterno, String apellidoMaterno, String correoElectronico, String username, String password, String tipoEmpleado, int idSede, String nombreSede, int codigoRespuesta, byte[] foto, int idHorario, String turno, String horario, ArrayList<Empleado> empleados) {
         this.idEmpleado = idEmpleado;
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
@@ -31,6 +35,10 @@ public class Empleado {
         this.idSede = idSede;
         this.nombreSede = nombreSede;
         this.codigoRespuesta = codigoRespuesta;
+        this.foto = foto;
+        this.idHorario = idHorario;
+        this.turno = turno;
+        this.horario = horario;
         this.empleados = empleados;
     }
 
@@ -120,6 +128,38 @@ public class Empleado {
 
     public void setCodigoRespuesta(int codigoRespuesta) {
         this.codigoRespuesta = codigoRespuesta;
+    }
+
+    public byte[] getFoto() {
+        return foto;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
+    }
+
+    public int getIdHorario() {
+        return idHorario;
+    }
+
+    public void setIdHorario(int idHorario) {
+        this.idHorario = idHorario;
+    }
+
+    public String getTurno() {
+        return turno;
+    }
+
+    public void setTurno(String turno) {
+        this.turno = turno;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
     }
 
     public ArrayList<Empleado> getEmpleados() {

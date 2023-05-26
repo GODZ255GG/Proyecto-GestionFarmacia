@@ -1,18 +1,20 @@
 package jfxgestionfarmacia.controladores;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -21,7 +23,17 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import jfxgestionfarmacia.interfaz.INotificacionOperacion;
+import jfxgestionfarmacia.modelo.DAO.EmpleadoDAO;
+import jfxgestionfarmacia.modelo.DAO.HorarioDAO;
+import jfxgestionfarmacia.modelo.DAO.SedeDAO;
 import jfxgestionfarmacia.modelo.pojo.Empleado;
+import jfxgestionfarmacia.modelo.pojo.Horario;
+import jfxgestionfarmacia.modelo.pojo.HorarioRespuesta;
+import jfxgestionfarmacia.modelo.pojo.Sede;
+import jfxgestionfarmacia.modelo.pojo.SedeRespuesta;
+import jfxgestionfarmacia.utils.Constantes;
+import jfxgestionfarmacia.utils.Utilidades;
 
 public class FXMLFormularioEmpleadoController implements Initializable {
 
@@ -38,23 +50,277 @@ public class FXMLFormularioEmpleadoController implements Initializable {
     @FXML
     private TextField tfCorreoElectronico;
     @FXML
-    private ComboBox<Empleado> cbTipoEmpleado;
-    @FXML
     private TextField tfUsername;
     @FXML
     private TextField tfPassword;
     @FXML
-    private ComboBox<?> cbSede;
-    
+    private ComboBox<Sede> cbSede;
     private File archivoFoto;
+    private boolean esEdicion;
+    private Empleado empleadoEdicion;
+    private INotificacionOperacion interfazNotificacion;
+    private ObservableList<Sede> sedes;
+    @FXML
+    private TextField tfTipoEmpleado;
+    @FXML
+    private ComboBox<Horario> cbTurno;
+    @FXML
+    private TextField tfHorario;
+    private ObservableList<Horario> horarios;
+    String estiloError = "-fx-border-color: RED; -fx-border-width: 2; -fx-border-radius: 2;";
+    String estiloNormal = "-fx-border-width: 0;";
     
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        cargarInformacionSede();
+        cargarInformacionHorario();
     }    
     
+    public void inicializarInformacionFormlario(boolean esEdicion, Empleado empleadoEdicion, INotificacionOperacion interfazNotificacion){
+        this.esEdicion = esEdicion;
+        this.empleadoEdicion = empleadoEdicion;
+        this.interfazNotificacion = interfazNotificacion;
+        //TODO
+        if(esEdicion){
+            lbTitulo.setText("Editar información del empleado(a) "+empleadoEdicion.getNombre());
+            cargarInformacionEdicion();
+        }else{
+            lbTitulo.setText("Registrar nuevo Empleado(a)");
+        }
+    }
+    
+    public void cargarInformacionEdicion(){
+        tfNombre.setText(empleadoEdicion.getNombre());
+        tfApellidoPaterno.setText(empleadoEdicion.getApellidoPaterno());
+        tfApellidoMaterno.setText(empleadoEdicion.getApellidoMaterno());
+        tfCorreoElectronico.setText(empleadoEdicion.getCorreoElectronico());
+        tfUsername.setText(empleadoEdicion.getUsername());
+        tfPassword.setText(empleadoEdicion.getPassword());
+        tfTipoEmpleado.setText(empleadoEdicion.getTipoEmpleado());
+        int posicionSede = obtenerPosicionComboSede(empleadoEdicion.getIdSede());
+        cbSede.getSelectionModel().select(posicionSede);
+        int posicionTurno = obtenerPosicionComboTurno(empleadoEdicion.getIdHorario());
+        cbTurno.getSelectionModel().select(posicionTurno);
+        tfHorario.setText(empleadoEdicion.getHorario());
+        tfHorario.setEditable(false);
+        try{
+            ByteArrayInputStream inputFoto = new ByteArrayInputStream(empleadoEdicion.getFoto());
+            Image imgFotoEmpleado = new Image(inputFoto);
+            ivImagenEmpleado.setImage(imgFotoEmpleado);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    @FXML
+    private void clicBtnRegistrarEmpleado(ActionEvent event) {
+        validarCamposRegistro();
+    }
+    
+    @FXML
+    private void clicBtnCancelarRegistro(ActionEvent event) {
+        cerrarVentana();
+    }
+    
+    private void validarCamposRegistro(){
+        establecerEstiloNormal();
+        boolean datosValidados = true;
+        
+        String nombre = tfNombre.getText();
+        String apellidoPaterno = tfApellidoPaterno.getText();
+        String apellidoMaterno = tfApellidoMaterno.getText();
+        String correoElectronico = tfCorreoElectronico.getText();
+        String username = tfUsername.getText();
+        String password = tfPassword.getText();
+        String tipoEmpleado = tfTipoEmpleado.getText();
+        int posicionSede = cbSede.getSelectionModel().getSelectedIndex();
+        int posicionTurno = cbTurno.getSelectionModel().getSelectedIndex();
+        String horario = tfHorario.getText();
+        //TODO
+        if(nombre.isEmpty()){
+            tfNombre.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(apellidoPaterno.isEmpty()){
+            tfApellidoPaterno.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(apellidoMaterno.isEmpty()){
+            tfApellidoMaterno.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(!Utilidades.correoValido(correoElectronico)){
+            tfCorreoElectronico.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(username.isEmpty()){
+            tfUsername.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(password.isEmpty()){
+            tfPassword.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(tipoEmpleado.isEmpty()){
+            tfTipoEmpleado.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(horario.isEmpty()){
+            tfHorario.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(posicionSede == -1){
+            cbSede.setStyle(estiloError);
+            datosValidados = false;
+        }
+        if(posicionTurno == -1){
+            cbTurno.setStyle(estiloError);
+            datosValidados = false;
+        }
+        
+        Empleado empleadoValidado = new Empleado();
+        empleadoValidado.setNombre(nombre);
+        empleadoValidado.setApellidoPaterno(apellidoPaterno);
+        empleadoValidado.setApellidoMaterno(apellidoMaterno);
+        empleadoValidado.setCorreoElectronico(correoElectronico);
+        empleadoValidado.setUsername(username);
+        empleadoValidado.setPassword(password);
+        empleadoValidado.setTipoEmpleado(tipoEmpleado);
+        empleadoValidado.setIdSede(sedes.get(posicionSede).getIdSede());
+        empleadoValidado.setIdHorario(horarios.get(posicionTurno).getIdHorario());
+        empleadoValidado.setHorario(horario);
+        
+        try{
+            if(esEdicion){
+                if(archivoFoto != null || empleadoEdicion.getFoto().length > 0){
+                    if(archivoFoto != null){
+                    empleadoValidado.setFoto(Files.readAllBytes(archivoFoto.toPath()));
+                }else{
+                    empleadoValidado.setFoto(empleadoEdicion.getFoto());
+                }
+                empleadoValidado.setIdEmpleado((empleadoEdicion.getIdEmpleado()));
+                actualizarEmplado(empleadoValidado);
+                }else{
+                    Utilidades.mostrarDialogoSimple("Selecciona una Foto para el empleado", 
+                            "Para editar el registro del Emleado debes seleccionar su foto desde el boton de Seleccionar Foto", 
+                            AlertType.WARNING);
+                }   
+            }else{
+                if(archivoFoto != null){
+                    empleadoValidado.setFoto(Files.readAllBytes(archivoFoto.toPath()));
+                    registrarEmpleado(empleadoValidado);
+                }else{
+                    Utilidades.mostrarDialogoSimple("Seleccionae una foto para el empleado", 
+                            "Para guardar el registro del Emleado debes seleccionar su foto desde el boton de Seleccionar Foto", 
+                            AlertType.WARNING);
+                }
+            }
+        }catch(IOException e){
+            Utilidades.mostrarDialogoSimple("Error con el archivo", 
+                    "Hubo un error al intentar guardar la imagen, vuelva a seleccinar el archivo", AlertType.ERROR);
+        } 
+    }
+    
+    private void registrarEmpleado(Empleado empleadoRegistro){
+        int codigoRespuesta = EmpleadoDAO.guardarEmpleado(empleadoRegistro);
+        switch(codigoRespuesta){
+            case Constantes.ERROR_CONEXION:
+                    Utilidades.mostrarDialogoSimple("Error de conexión", 
+                            "El empleado no puede ser guardado debido a un error en su conexión...", AlertType.ERROR);
+                break;
+            case Constantes.ERROR_CONSULTA:
+                    Utilidades.mostrarDialogoSimple("Error en la información", 
+                            "La información del empleado no puede ser guardada, por favor verifique su información", AlertType.WARNING);
+                break;
+            case Constantes.OPERACION_EXITOSA:
+                    Utilidades.mostrarDialogoSimple("Empleado Registrado", 
+                            "La información del empleado fue guardada correctamente", AlertType.INFORMATION);
+                    cerrarVentana();
+                    interfazNotificacion.notificarOperacionGuardar(empleadoRegistro.getNombre());
+                break;
+        }
+    }
+    
+    private void actualizarEmplado(Empleado empleadoActualizar){
+        int codigoRespuesta = EmpleadoDAO.modificarEmpleado(empleadoActualizar);
+        switch(codigoRespuesta){
+            case Constantes.ERROR_CONEXION:
+                    Utilidades.mostrarDialogoSimple("Error de conexión", 
+                            "El empleado no puede ser modificar debido a un error en su conexión...", AlertType.ERROR);
+                break;
+            case Constantes.ERROR_CONSULTA:
+                    Utilidades.mostrarDialogoSimple("Error en la información", 
+                            "La información del empleado no puede ser modificar, por favor verifique su información", AlertType.WARNING);
+                break;
+            case Constantes.OPERACION_EXITOSA:
+                    Utilidades.mostrarDialogoSimple("Empleado Registrado", 
+                            "La información del empleado fue modificada correctamente", AlertType.INFORMATION);
+                    cerrarVentana();
+                    interfazNotificacion.notificarOperacionActualizar(empleadoActualizar.getNombre());
+                break;
+        }
+    }
+    
+    private void cargarInformacionSede(){
+        sedes = FXCollections.observableArrayList();
+        SedeRespuesta sedesBD = SedeDAO.obtenerInformacionSedes();
+        switch(sedesBD.getCodigoRespuesta()){
+            case Constantes.ERROR_CONEXION:
+                    Utilidades.mostrarDialogoSimple("Error de Conexión", 
+                            "Error de conexion con la base de datos.", AlertType.ERROR);
+                break;
+            case Constantes.ERROR_CONSULTA:
+                    Utilidades.mostrarDialogoSimple("Error de Consulta", 
+                            "Por el momento no se puede obtener la información.", AlertType.WARNING);
+                break;
+            case Constantes.OPERACION_EXITOSA:
+                    sedes.addAll(sedesBD.getSede());
+                    cbSede.setItems(sedes); 
+                break;
+        }
+    }
+    
+    private void cargarInformacionHorario(){
+        horarios = FXCollections.observableArrayList();
+        HorarioRespuesta horarioBD = HorarioDAO.obtenerInformacionHorarios();
+        switch(horarioBD.getCodigoRespuesta()){
+            case Constantes.ERROR_CONEXION:
+                    Utilidades.mostrarDialogoSimple("Error de Conexión", 
+                            "Error de conexion con la base de datos.", Alert.AlertType.ERROR);
+                break;
+            case Constantes.ERROR_CONSULTA:
+                    Utilidades.mostrarDialogoSimple("Error de Consulta", 
+                            "Por el momento no se puede obtener la información.", Alert.AlertType.WARNING);
+                break;
+            case Constantes.OPERACION_EXITOSA:
+                    horarios.addAll(horarioBD.getHorario());
+                    cbTurno.setItems(horarios); 
+                break;
+        }
+    }
+    
+    private void cerrarVentana(){
+        Stage escenarioBase = (Stage) lbTitulo.getScene().getWindow();
+        escenarioBase.close();
+    }
+    
+    private int obtenerPosicionComboSede(int idSede){
+        for (int i = 0; i < sedes.size(); i++){
+            if(sedes.get(i).getIdSede() == idSede)
+                return i;
+        }
+        return 0;
+    }
+    
+    private int obtenerPosicionComboTurno(int idTurno){
+        for (int i = 0; i < sedes.size(); i++){
+            if(sedes.get(i).getIdSede() == idTurno)
+                return i;
+        }
+        return 0;
+    }
+    
     @FXML
     private void clicSeleccionarImagen(ActionEvent event) {
         FileChooser dialogoSeleccionImg = new FileChooser();
@@ -75,26 +341,17 @@ public class FXMLFormularioEmpleadoController implements Initializable {
             
         }
     }
-
-    @FXML
-    private void clicBtnRegistrarEmpleado(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicBtnCancelarRegistro(ActionEvent event) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Cancelar registro");
-            alert.setHeaderText("¿Desea cancelar el registro del Empleado?");
-            
-            ButtonType btnSi = new ButtonType("Sí");
-            ButtonType btnNo = new ButtonType("No");
-            alert.getButtonTypes().setAll(btnSi, btnNo);
-            
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == btnSi) {
-                Stage escearioPrincipal = (Stage) tfNombre.getScene().getWindow();
-                escearioPrincipal.close();
-            }
-    }
     
+    private void establecerEstiloNormal(){
+        tfNombre.setStyle(estiloNormal);
+        tfApellidoMaterno.setStyle(estiloNormal);
+        tfApellidoPaterno.setStyle(estiloNormal);
+        tfCorreoElectronico.setStyle(estiloNormal);
+        tfUsername.setStyle(estiloNormal);
+        tfPassword.setStyle(estiloNormal);
+        tfTipoEmpleado.setStyle(estiloNormal);
+        tfHorario.setStyle(estiloNormal);
+        cbSede.setStyle(estiloNormal);
+        cbTurno.setStyle(estiloNormal);
+    }
 }
