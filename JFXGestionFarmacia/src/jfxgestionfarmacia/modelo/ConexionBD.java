@@ -7,12 +7,12 @@ import java.sql.SQLException;
 public class ConexionBD {
     
     private static String driver = "com.mysql.jdbc.Driver";
-    private static String nombreBase = "Farmacia";
+    private static String nombreBase = "gestionfarmacia";
     private static String hostname = "127.0.0.1";
     private static String puerto = "3306";
     
-    private static String usuario = "Administrador";
-    private static String password = "Swordart10";
+    private static String usuario = "Admin";
+    private static String password = "Swordart1024";
     
     private static String urlConexion = "jdbc:mysql://"+hostname+":"+puerto+"/"+
             nombreBase+"?allowPublicKeyRetrieval=true&useSSL=false";
