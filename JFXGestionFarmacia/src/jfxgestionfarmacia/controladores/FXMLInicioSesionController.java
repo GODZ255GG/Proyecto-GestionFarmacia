@@ -26,10 +26,8 @@ public class FXMLInicioSesionController implements Initializable {
     private Label lbErrorPassword;
     @FXML
     private PasswordField tfPassword;
+    private String nombreEmpleado;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -88,13 +86,11 @@ public class FXMLInicioSesionController implements Initializable {
         }
     }
     
-    // Direccionar a pantalla principal
     private void irPantallaPrincipal() {
-            // Para obtener el escenario se utiliza getWindow()
-            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
-            escenarioBase.setScene(Utilidades.inicializarEscena("vistas/FXMLMain.fxml"));
-            escenarioBase.setTitle("Home");
-            escenarioBase.show();
+        Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+        escenarioBase.setScene(Utilidades.inicializarEscena("vistas/FXMLMain.fxml"));
+        escenarioBase.setTitle("Home");
+        escenarioBase.show();
     }
 
     @FXML
@@ -102,5 +98,4 @@ public class FXMLInicioSesionController implements Initializable {
         Platform.exit();
         System.exit(0);
     }
-    
 }

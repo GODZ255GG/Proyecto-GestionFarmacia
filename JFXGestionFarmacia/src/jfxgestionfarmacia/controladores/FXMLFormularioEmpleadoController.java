@@ -61,20 +61,23 @@ public class FXMLFormularioEmpleadoController implements Initializable {
     private INotificacionOperacion interfazNotificacion;
     private ObservableList<Sede> sedes;
     @FXML
-    private TextField tfTipoEmpleado;
-    @FXML
     private ComboBox<Horario> cbTurno;
     @FXML
     private TextField tfHorario;
     private ObservableList<Horario> horarios;
     String estiloError = "-fx-border-color: RED; -fx-border-width: 2; -fx-border-radius: 2;";
     String estiloNormal = "-fx-border-width: 0;";
+    @FXML
+    private ComboBox<String> cbTipoEmpleado;
+    private ObservableList<String> tipos;
     
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarInformacionSede();
-        cargarInformacionHorario();
+        cargarInformacionTurno();
+        cargarInformacionTipoEmpleado();
+        cbTurno.setOnAction(this::actualizarHorario);
     }    
     
     public void inicializarInformacionFormlario(boolean esEdicion, Empleado empleadoEdicion, INotificacionOperacion interfazNotificacion){
@@ -87,6 +90,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
             cargarInformacionEdicion();
         }else{
             lbTitulo.setText("Registrar nuevo Empleado(a)");
+            tfHorario.setEditable(false);
         }
     }
     
@@ -97,7 +101,8 @@ public class FXMLFormularioEmpleadoController implements Initializable {
         tfCorreoElectronico.setText(empleadoEdicion.getCorreoElectronico());
         tfUsername.setText(empleadoEdicion.getUsername());
         tfPassword.setText(empleadoEdicion.getPassword());
-        tfTipoEmpleado.setText(empleadoEdicion.getTipoEmpleado());
+        String tipoEmpleado = empleadoEdicion.getTipoEmpleado();
+        cbTipoEmpleado.getSelectionModel().select(tipoEmpleado);
         int posicionSede = obtenerPosicionComboSede(empleadoEdicion.getIdSede());
         cbSede.getSelectionModel().select(posicionSede);
         int posicionTurno = obtenerPosicionComboTurno(empleadoEdicion.getIdHorario());
@@ -133,7 +138,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
         String correoElectronico = tfCorreoElectronico.getText();
         String username = tfUsername.getText();
         String password = tfPassword.getText();
-        String tipoEmpleado = tfTipoEmpleado.getText();
+        String tipoEmpleado = cbTipoEmpleado.getSelectionModel().getSelectedItem();
         int posicionSede = cbSede.getSelectionModel().getSelectedIndex();
         int posicionTurno = cbTurno.getSelectionModel().getSelectedIndex();
         String horario = tfHorario.getText();
@@ -163,7 +168,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
             datosValidados = false;
         }
         if(tipoEmpleado.isEmpty()){
-            tfTipoEmpleado.setStyle(estiloError);
+            cbTipoEmpleado.setStyle(estiloError);
             datosValidados = false;
         }
         if(horario.isEmpty()){
@@ -281,7 +286,12 @@ public class FXMLFormularioEmpleadoController implements Initializable {
         }
     }
     
-    private void cargarInformacionHorario(){
+    private void cargarInformacionTipoEmpleado(){
+        tipos = FXCollections.observableArrayList("Administrador", "Encargado");
+        cbTipoEmpleado.setItems(tipos);
+    }
+    
+    private void cargarInformacionTurno(){
         horarios = FXCollections.observableArrayList();
         HorarioRespuesta horarioBD = HorarioDAO.obtenerInformacionHorarios();
         switch(horarioBD.getCodigoRespuesta()){
@@ -342,6 +352,14 @@ public class FXMLFormularioEmpleadoController implements Initializable {
         }
     }
     
+    private void actualizarHorario(ActionEvent event){
+        Horario horarioSeleccionado = cbTurno.getSelectionModel().getSelectedItem();
+        if(horarioSeleccionado != null){
+            String horario = horarioSeleccionado.getHorario();
+            tfHorario.setText(horario);
+        }
+    }
+    
     private void establecerEstiloNormal(){
         tfNombre.setStyle(estiloNormal);
         tfApellidoMaterno.setStyle(estiloNormal);
@@ -349,7 +367,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
         tfCorreoElectronico.setStyle(estiloNormal);
         tfUsername.setStyle(estiloNormal);
         tfPassword.setStyle(estiloNormal);
-        tfTipoEmpleado.setStyle(estiloNormal);
+        cbTipoEmpleado.setStyle(estiloNormal);
         tfHorario.setStyle(estiloNormal);
         cbSede.setStyle(estiloNormal);
         cbTurno.setStyle(estiloNormal);

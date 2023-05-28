@@ -30,7 +30,6 @@
             <Image url="@../recursos/add.jpg" />
          </image>
       </ImageView>
-      <TextField fx:id="tfTipoEmpleado" layoutX="99.0" layoutY="527.0" prefHeight="35.0" prefWidth="241.0" style="-fx-background-color: white;" />
       <Label layoutX="487.0" layoutY="370.0" text="Password" textFill="WHITE">
          <font>
             <Font size="18.0" />
@@ -95,5 +94,6 @@
          </font>
       </Label>
       <ComboBox fx:id="cbTurno" layoutX="99.0" layoutY="635.0" prefHeight="35.0" prefWidth="241.0" style="-fx-background-color: white;" />
+      <ComboBox fx:id="cbTipoEmpleado" layoutX="99.0" layoutY="525.0" prefHeight="35.0" prefWidth="241.0" style="-fx-background-color: white;" />
    </children>
 </AnchorPane>

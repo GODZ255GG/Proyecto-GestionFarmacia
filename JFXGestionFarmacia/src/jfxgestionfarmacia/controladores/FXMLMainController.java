@@ -36,10 +36,6 @@ public class FXMLMainController implements Initializable {
         timeline.play();
     }
     
-    public void mostrarNombre(){
-        
-    }
-
     @FXML
     private void clicAdminEmpleados(MouseEvent event) {
         Stage escenarioEmpleados = new Stage();

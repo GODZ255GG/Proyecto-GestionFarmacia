@@ -32,8 +32,6 @@ public class FXMLConsultarEmpleadoController implements Initializable {
     @FXML
     private ImageView ivImagenEmpleado;
     @FXML
-    private TextField tfTipoEmpleado;
-    @FXML
     private TextField tfPassword;
     @FXML
     private TextField tfUsername;
@@ -56,11 +54,15 @@ public class FXMLConsultarEmpleadoController implements Initializable {
     @FXML
     private ComboBox<Horario> cbTurno;
     private ObservableList<Horario> horarios;
+    @FXML
+    private ComboBox<String> cbTipoEmpleado;
+    private ObservableList<String> tipos;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarInformacionSede();
         cargarInformacionHorario();
+        cargarInformacionTipoEmpleado();
     }
 
     public void inicializarInformacionConsulta(Empleado empleadoConsulta){
@@ -83,13 +85,15 @@ public class FXMLConsultarEmpleadoController implements Initializable {
         tfUsername.setEditable(false);
         tfPassword.setText(empleadoConsulta.getPassword());
         tfPassword.setEditable(false);
-        tfTipoEmpleado.setText(empleadoConsulta.getTipoEmpleado());
-        tfTipoEmpleado.setEditable(false);
+        String tipoEmpleado = empleadoConsulta.getTipoEmpleado();
+        cbTipoEmpleado.getSelectionModel().select(tipoEmpleado);
+        cbTipoEmpleado.setEditable(false);
         int posicionSede = obtenerPosicionComboSede(empleadoConsulta.getIdSede());
         cbSede.getSelectionModel().select(posicionSede);
         cbSede.setEditable(false);
         int posicionTurno = obtenerPosicionComboTurno(empleadoConsulta.getIdHorario());
         cbTurno.getSelectionModel().select(posicionTurno);
+        cbTurno.setEditable(false);
         tfHorario.setText(empleadoConsulta.getHorario());
         tfHorario.setEditable(false);
         try{
@@ -153,6 +157,11 @@ public class FXMLConsultarEmpleadoController implements Initializable {
                     cbTurno.setItems(horarios); 
                 break;
         }
+    }
+    
+    private void cargarInformacionTipoEmpleado(){
+        tipos = FXCollections.observableArrayList("Administrador", "Encargado");
+        cbTipoEmpleado.setItems(tipos);
     }
     
     @FXML
