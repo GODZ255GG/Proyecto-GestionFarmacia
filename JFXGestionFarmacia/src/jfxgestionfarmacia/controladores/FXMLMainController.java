@@ -3,15 +3,12 @@ package jfxgestionfarmacia.controladores;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -38,7 +35,7 @@ public class FXMLMainController implements Initializable {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
-
+    
     @FXML
     private void clicAdminEmpleados(MouseEvent event) {
         Stage escenarioEmpleados = new Stage();
@@ -61,19 +58,13 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     private void clicCerrarSesion(MouseEvent event) {
-         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Cerrar Sesión");
-            alert.setHeaderText("¿Seguro que desea Cerrar Sesión?");
-         
-            ButtonType btnAceptar = new ButtonType("Aceptar");
-            ButtonType btnCancelar = new ButtonType("Cancelar");
-            alert.getButtonTypes().setAll(btnAceptar, btnCancelar);
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == btnAceptar) {
-                Stage escenarioBase = (Stage) lbReloj.getScene().getWindow();
+        boolean cerrarSesion = Utilidades.mostrarDialogConfirmacion("Cerrar Sesion", 
+                "¿Esta seguro que desea cerrar sesion?");
+        if(cerrarSesion){
+            Stage escenarioBase = (Stage) lbReloj.getScene().getWindow();
                 escenarioBase.setScene(Utilidades.inicializarEscena("vistas/FXMLInicioSesion.fxml"));
                 escenarioBase.setTitle("Inicio Sesión");
                 escenarioBase.show();
-            }
+        }
     }
 }
