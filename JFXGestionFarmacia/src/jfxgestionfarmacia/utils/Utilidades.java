@@ -2,6 +2,8 @@ package jfxgestionfarmacia.utils;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -40,6 +42,26 @@ public class Utilidades {
         alertaConfirmacion.setHeaderText(null);
         Optional<ButtonType> botonClic = alertaConfirmacion.showAndWait();
         return (botonClic.get() == ButtonType.OK);
+    }
+    
+    public static boolean mostrarDialogoConfirmacion(String titulo, String mensaje){
+        Alert alertaConfirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        alertaConfirmacion.setTitle(titulo);
+        alertaConfirmacion.setContentText(mensaje);
+        alertaConfirmacion.setHeaderText(null);
+        Optional<ButtonType> botonClic = alertaConfirmacion.showAndWait();
+        return (botonClic.get() == ButtonType.OK);
+    }
+    
+    public static boolean descuentoValido(String descuento){
+        if(descuento != null && !descuento.isEmpty()){
+            Pattern patronCorreo = Pattern.compile("^(?:100(?:\\.0+)?|\\d{1,2}(?:\\.\\d+)?|\\.\\d+)$");
+            Matcher matchPatron = patronCorreo.matcher(descuento);
+            return matchPatron.find();
+        }else{
+            return false;
+        }
+        
     }
     
 }
