@@ -23,7 +23,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import jfxgestionfarmacia.interfaz.INotificacionOperacion;
 import jfxgestionfarmacia.modelo.DAO.EmpleadoDAO;
 import jfxgestionfarmacia.modelo.DAO.HorarioDAO;
 import jfxgestionfarmacia.modelo.DAO.SedeDAO;
@@ -34,6 +33,7 @@ import jfxgestionfarmacia.modelo.pojo.Sede;
 import jfxgestionfarmacia.modelo.pojo.SedeRespuesta;
 import jfxgestionfarmacia.utils.Constantes;
 import jfxgestionfarmacia.utils.Utilidades;
+import jfxgestionfarmacia.interfazempleado.INotificacionOperacionEmpleado;
 
 public class FXMLFormularioEmpleadoController implements Initializable {
 
@@ -58,7 +58,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
     private File archivoFoto;
     private boolean esEdicion;
     private Empleado empleadoEdicion;
-    private INotificacionOperacion interfazNotificacion;
+    private INotificacionOperacionEmpleado interfazNotificacion;
     private ObservableList<Sede> sedes;
     @FXML
     private ComboBox<Horario> cbTurno;
@@ -80,7 +80,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
         cbTurno.setOnAction(this::actualizarHorario);
     }    
     
-    public void inicializarInformacionFormlario(boolean esEdicion, Empleado empleadoEdicion, INotificacionOperacion interfazNotificacion){
+    public void inicializarInformacionFormlario(boolean esEdicion, Empleado empleadoEdicion, INotificacionOperacionEmpleado interfazNotificacion){
         this.esEdicion = esEdicion;
         this.empleadoEdicion = empleadoEdicion;
         this.interfazNotificacion = interfazNotificacion;
@@ -242,7 +242,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
                     Utilidades.mostrarDialogoSimple("Empleado Registrado", 
                             "La información del empleado fue guardada correctamente", AlertType.INFORMATION);
                     cerrarVentana();
-                    interfazNotificacion.notificarOperacionGuardar(empleadoRegistro.getNombre());
+                    interfazNotificacion.notificarOperacionGuardarEmpleado(empleadoRegistro.getNombre());
                 break;
         }
     }
@@ -262,7 +262,7 @@ public class FXMLFormularioEmpleadoController implements Initializable {
                     Utilidades.mostrarDialogoSimple("Empleado Registrado", 
                             "La información del empleado fue modificada correctamente", AlertType.INFORMATION);
                     cerrarVentana();
-                    interfazNotificacion.notificarOperacionActualizar(empleadoActualizar.getNombre());
+                    interfazNotificacion.notificarOperacionActualizarEmpleado(empleadoActualizar.getNombre());
                 break;
         }
     }

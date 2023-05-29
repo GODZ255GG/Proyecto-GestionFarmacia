@@ -58,7 +58,7 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     private void clicCerrarSesion(MouseEvent event) {
-        boolean cerrarSesion = Utilidades.mostrarDialogConfirmacion("Cerrar Sesion", 
+        boolean cerrarSesion = Utilidades.mostrarDialogoConfirmacion("Cerrar Sesion", 
                 "¿Esta seguro que desea cerrar sesion?");
         if(cerrarSesion){
             Stage escenarioBase = (Stage) lbReloj.getScene().getWindow();

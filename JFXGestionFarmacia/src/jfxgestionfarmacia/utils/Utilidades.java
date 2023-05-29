@@ -35,7 +35,7 @@ public class Utilidades {
         return escena;
     }
     
-    public static boolean mostrarDialogConfirmacion(String titulo, String mensaje){
+    public static boolean mostrarDialogoConfirmacion(String titulo, String mensaje){
         Alert alertaConfirmacion = new Alert(Alert.AlertType.CONFIRMATION);
         alertaConfirmacion.setTitle(titulo);
         alertaConfirmacion.setContentText(mensaje);

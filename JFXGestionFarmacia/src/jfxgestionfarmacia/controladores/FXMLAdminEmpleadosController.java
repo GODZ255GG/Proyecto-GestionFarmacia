@@ -26,13 +26,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jfxgestionfarmacia.JFXGestionFarmacia;
-import jfxgestionfarmacia.interfaz.INotificacionOperacion;
 import jfxgestionfarmacia.modelo.DAO.EmpleadoDAO;
 import jfxgestionfarmacia.modelo.pojo.Empleado;
 import jfxgestionfarmacia.utils.Constantes;
 import jfxgestionfarmacia.utils.Utilidades;
+import jfxgestionfarmacia.interfazempleado.INotificacionOperacionEmpleado;
 
-public class FXMLAdminEmpleadosController implements Initializable, INotificacionOperacion {
+public class FXMLAdminEmpleadosController implements Initializable, INotificacionOperacionEmpleado {
 
     @FXML
     private TextField tfBuscar;
@@ -192,7 +192,7 @@ public class FXMLAdminEmpleadosController implements Initializable, INotificacio
     private void clicBtnDarBaja(ActionEvent event) {
         Empleado empleadoSeleccionado = tvEmpleados.getSelectionModel().getSelectedItem();
         if(empleadoSeleccionado != null){
-            boolean borrarRegistro = Utilidades.mostrarDialogConfirmacion("Eliminar Registro", 
+            boolean borrarRegistro = Utilidades.mostrarDialogoConfirmacion("Eliminar Registro", 
                     "¿Esta seguro de que deseas eliminar el registro del Empleado(a): "+empleadoSeleccionado.getNombre()+" "+empleadoSeleccionado.getApellidoPaterno()+" "+empleadoSeleccionado.getApellidoMaterno()+"?");
             if(borrarRegistro){
                 int codigoRespuesta = EmpleadoDAO.eliminarEmpleado(empleadoSeleccionado.getIdEmpleado());
@@ -225,14 +225,14 @@ public class FXMLAdminEmpleadosController implements Initializable, INotificacio
     }
 
     @Override
-    public void notificarOperacionGuardar(String nombreEmpleado) {
+    public void notificarOperacionGuardarEmpleado(String nombreEmpleado) {
         Utilidades.mostrarDialogoSimple("Notificación", 
                 "Empleado(a) "+nombreEmpleado + " guardado", Alert.AlertType.INFORMATION);
         cargarInformacionTabla();
     }
 
     @Override
-    public void notificarOperacionActualizar(String nombreEmpleado) {
+    public void notificarOperacionActualizarEmpleado(String nombreEmpleado) {
         Utilidades.mostrarDialogoSimple("Notificación", 
                 "Empleado(a) "+nombreEmpleado + " actualizado", Alert.AlertType.INFORMATION);
         cargarInformacionTabla();
