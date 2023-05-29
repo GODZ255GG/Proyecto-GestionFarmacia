@@ -44,15 +44,6 @@ public class Utilidades {
         return (botonClic.get() == ButtonType.OK);
     }
     
-    public static boolean mostrarDialogoConfirmacion(String titulo, String mensaje){
-        Alert alertaConfirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        alertaConfirmacion.setTitle(titulo);
-        alertaConfirmacion.setContentText(mensaje);
-        alertaConfirmacion.setHeaderText(null);
-        Optional<ButtonType> botonClic = alertaConfirmacion.showAndWait();
-        return (botonClic.get() == ButtonType.OK);
-    }
-    
     public static boolean descuentoValido(String descuento){
         if(descuento != null && !descuento.isEmpty()){
             Pattern patronCorreo = Pattern.compile("^(?:100(?:\\.0+)?|\\d{1,2}(?:\\.\\d+)?|\\.\\d+)$");
